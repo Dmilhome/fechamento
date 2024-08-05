@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fechamento de Caixa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+        h1, h2, label {
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fechamento de Caixa</h1>
+        <label for="fundo">Fundo:</label>
+        <input type="number" id="fundo" placeholder="Valor do fundo de caixa" oninput="atualizarTotais()" inputmode="decimal">
+        
+        <label for="vendas">Vendas:</label>
+        <input type="number" id="vendas" placeholder="Valor das vendas" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <div class="result" id="total01"></div>
+    
+        <h2>Variáveis:</h2>
+    
+        <label for="cedula">Cédula:</label>
+        <input type="number" id="cedula" placeholder="Valor em cédulas" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="moedas">Moedas:</label>
+        <input type="number" id="moedas" placeholder="Valor em moedas" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="cartao">Cartão:</label>
+        <input type="number" id="cartao" placeholder="Valor em cartão" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="pix">Pix:</label>
+        <input type="number" id="pix" placeholder="Valor em Pix" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="sangria">Sangria:</label>
+        <input type="number" id="sangria" placeholder="Valor de sangria" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="rota">Rota:</label>
+        <input type="number" id="rota" placeholder="Valor de rota" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="canceladas">Canceladas:</label>
+        <input type="number" id="canceladas" placeholder="Valor de vendas canceladas" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="gasolina">Gasolina:</label>
+        <input type="number" id="gasolina" placeholder="Valor de gasolina" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="deposito">Depósito:</label>
+        <input type="number" id="deposito" placeholder="Valor de depósito" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="loja">Loja:</label>
+        <input type="number" id="loja" placeholder="Valor de loja" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="vale">Vale:</label>
+        <input type="number" id="vale" placeholder="Valor de vale" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <label for="diarias">Diárias:</label>
+        <input type="number" id="diarias" placeholder="Valor de diárias" oninput="atualizarTotais()" inputmode="decimal">
+    
+        <div class="result" id="total02"></div>
+    
+        <button onclick="calcularDiferenca()">Calcular</button>
+    
+        <div class="result" id="resultado"></div>
+
+        <button onclick="abrirFormularioEnvio()">Enviar</button>
+
+        <div id="formularioEnvio" style="display: none;">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" placeholder="Digite seu nome">
+            
+            <label for="turno">Turno:</label>
+            <select id="turno">
+                <option value="manhã">Manhã</option>
+                <option value="tarde">Tarde</option>
+            </select>
+            
+            <button onclick="enviarDados()">Confirmar Envio</button>
+            <div id="successMessage" class="success-message" style="display: none;">Dados enviados com sucesso!</div>
+        </div>
+    </div>
+
+    <script>
+        function parseInputValue(value) {
+            return parseFloat(value.replace(',', '.')) || 0;
+        }
+
+        function atualizarTotais() {
+            const fundo = parseInputValue(document.getElementById('fundo').value);
+            const vendas = parseInputValue(document.getElementById('vendas').value);
+            const total01 = fundo + vendas;
+            document.getElementById('total01').innerHTML = `R$ ${total01.toFixed(2)}`;
+
+            const cedula = parseInputValue(document.getElementById('cedula').value);
+            const moedas = parseInputValue(document.getElementById('moedas').value);
+            const cartao = parseInputValue(document.getElementById('cartao').value);
+            const pix = parseInputValue(document.getElementById('pix').value);
+            const sangria = parseInputValue(document.getElementById('sangria').value);
+            const rota = parseInputValue(document.getElementById('rota').value);
+            const canceladas = parseInputValue(document.getElementById('canceladas').value);
+            const gasolina = parseInputValue(document.getElementById('gasolina').value);
+            const deposito = parseInputValue(document.getElementById('deposito').value);
+            const loja = parseInputValue(document.getElementById('loja').value);
+            const vale = parseInputValue(document.getElementById('vale').value);
+            const diarias = parseInputValue(document.getElementById('diarias').value);
+
+            const total02 = cedula + moedas + cartao + pix + sangria + rota + canceladas + gasolina + deposito + loja + vale + diarias;
+            document.getElementById('total02').innerHTML = `R$ ${total02.toFixed(2)}`;
+        }
+
+        function calcularDiferenca() {
+            const total01 = parseFloat(document.getElementById('total01').innerText.replace('R$ ', '').replace(',', '.')) || 0;
+            const total02 = parseFloat(document.getElementById('total02').innerText.replace('R$ ', '').replace(',', '.')) || 0;
+
+            const diferenca = total02 - total01;
+            const resultadoDiv = document.getElementById('resultado');
+
+            if (diferenca < 0) {
+                resultadoDiv.innerHTML = `Faltou R$ ${Math.abs(diferenca).toFixed(2)}`;
+                resultadoDiv.style.color = 'red';
+            } else {
+                resultadoDiv.innerHTML = `Sobrou R$ ${diferenca.toFixed(2)}`;
+                resultadoDiv.style.color = 'green';
+            }
+        }
+
+        function abrirFormularioEnvio() {
+            document.getElementById('formularioEnvio').style.display = 'block';
+        }
+
+        function generateHtmlFile(dados) {
+            let content = `Nome: ${dados.nome}<br>`;
+            content += `Turno: ${dados.turno}<br>`;
+            content += `Fundo: ${dados.fundo}<br>`;
+            content += `Vendas: ${dados.vendas}<br>`;
+            content += `Total (Fundo + Vendas): ${dados.total01}<br>`;
+            content += `Cédula: ${dados.cedula}<br>`;
+            content += `Moedas: ${dados.moedas}<br>`;
+            content += `Cartão: ${dados.cartao}<br>`;
+            content += `Pix: ${dados.pix}<br>`;
+            content += `Sangria: ${dados.sangria}<br>`;
+            content += `Rota: ${dados.rota}<br>`;
+            content += `Canceladas: ${dados.canceladas}<br>`;
+            content += `Gasolina: ${dados.gasolina}<br>`;
+            content += `Depósito: ${dados.deposito}<br>`;
+            content += `Loja: ${dados.loja}<br>`;
+            content += `Vale: ${dados.vale}<br>`;
+            content += `Diárias: ${dados.diarias}<br>`;
+            content += `Total Variáveis: ${dados.total02}<br>`;
+            content += `Diferença: ${dados.diferenca}<br>`;
+            content += `Data: ${dados.data}<br>`;
+
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${dados.nome}, ${dados.turno}.html`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function enviarDados() {
+            const nome = document.getElementById('nome').value;
+            const turno = document.getElementById('turno').value;
+            const fundo = parseInputValue(document.getElementById('fundo').value);
+            const vendas = parseInputValue(document.getElementById('vendas').value);
+            const total01 = fundo + vendas;
+            const cedula = parseInputValue(document.getElementById('cedula').value);
+            const moedas = parseInputValue(document.getElementById('moedas').value);
+            const cartao = parseInputValue(document.getElementById('cartao').value);
+            const pix = parseInputValue(document.getElementById('pix').value);
+            const sangria = parseInputValue(document.getElementById('sangria').value);
+            const rota = parseInputValue(document.getElementById('rota').value);
+            const canceladas = parseInputValue(document.getElementById('canceladas').value);
+            const gasolina = parseInputValue(document.getElementById('gasolina').value);
+            const deposito = parseInputValue(document.getElementById('deposito').value);
+            const loja = parseInputValue(document.getElementById('loja').value);
+            const vale = parseInputValue(document.getElementById('vale').value);
+            const diarias = parseInputValue(document.getElementById('diarias').value);
+            const total02 = cedula + moedas + cartao + pix + sangria + rota + canceladas + gasolina + deposito + loja + vale + diarias;
+            const diferenca = total02 - total01;
+
+            const dados = {
+                nome,
+                turno,
+                fundo,
+                vendas,
+                total01,
+                cedula,
+                moedas,
+                cartao,
+                pix,
+                sangria,
+                rota,
+                canceladas,
+                gasolina,
+                deposito,
+                loja,
+                vale,
+                diarias,
+                total02,
+                diferenca,
+                data: new Date().toLocaleString()
+            };
+
+            // Gerar e baixar o arquivo HTML
+            generateHtmlFile(dados);
+
+            // Mostrar mensagem de sucesso
+            document.getElementById('successMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
